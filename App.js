@@ -6,9 +6,10 @@ import {
   TextInput,
   View,
   Text,
+  Image,
 } from "react-native";
-import PriceItem from "./components/article-item";
-import PriceInput from "./components/article-input";
+import ArticleItem from "./components/article-item";
+import ArticleInput from "./components/article-input";
 
 export default function App() {
   const [modalIsVisible, setModalVisible] = useState(false);
@@ -39,10 +40,11 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      <Image source={""} />
       <View style={styles.addArticleButton}>
         <Button title="Ajouter un article" onPress={startAddArticleHandler} />
       </View>
-      <PriceInput
+      <ArticleInput
         onAddArticle={addArticleHandler}
         visible={modalIsVisible}
         onCancel={endAddArticleHandler}
@@ -54,7 +56,7 @@ export default function App() {
             data={articles}
             renderItem={(itemData) => {
               return (
-                <PriceItem
+                <ArticleItem
                   name={itemData.item.name}
                   id={itemData.item.id}
                   price={itemData.item.price}
