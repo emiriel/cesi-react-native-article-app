@@ -15,6 +15,7 @@ export default function App() {
 
   function endAddArticleHandler() {
     setModalVisible(false);
+    setArticle({});
   }
 
   function addArticleHandler(enteredName, enteredPrice) {

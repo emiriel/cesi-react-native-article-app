@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, StyleSheet, TextInput, View, Modal } from "react-native";
 
 function ArticleInput(props) {
   const { name, price, id } = props.selectedArticle;
-  const [enteredNameText, setEnteredNameText] = useState(name || "");
-  const [enteredPriceText, setEnteredPriceText] = useState(price || "");
+  const [enteredNameText, setEnteredNameText] = useState(name);
+  const [enteredPriceText, setEnteredPriceText] = useState(price);
+
+  useEffect(() => {
+    setEnteredNameText(name);
+    setEnteredPriceText(price);
+  });
 
   function nameInputHandler(enteredName) {
     setEnteredNameText(enteredName);
@@ -16,6 +21,18 @@ function ArticleInput(props) {
 
   function addArticleHandler() {
     props.onAddArticle(enteredNameText, enteredPriceText);
+    setEnteredNameText("");
+    setEnteredPriceText("");
+  }
+
+  function updateArticleHandler() {
+    props.onUpdateArticle(id, enteredNameText, enteredPriceText);
+    setEnteredNameText("");
+    setEnteredPriceText("");
+  }
+
+  function cancelArticleHandler() {
+    props.onCancel();
     setEnteredNameText("");
     setEnteredPriceText("");
   }
@@ -37,13 +54,13 @@ function ArticleInput(props) {
           keyboardType="number-pad"
         />
         <View style={styles.buttonContainer}>
-          {true ? (
+          {props.selectedArticle.id ? (
             <>
               <View style={styles.button}>
                 <Button
                   color="red"
                   title="Supprimer"
-                  onPress={props.onCancel}
+                  onPress={cancelArticleHandler}
                 />
               </View>
               <View>
@@ -53,7 +70,11 @@ function ArticleInput(props) {
           ) : (
             <>
               <View style={styles.button}>
-                <Button color="red" title="Annuler" onPress={props.onCancel} />
+                <Button
+                  color="red"
+                  title="Annuler"
+                  onPress={cancelArticleHandler}
+                />
               </View>
               <View>
                 <Button title="Ajouter" onPress={addArticleHandler} />
