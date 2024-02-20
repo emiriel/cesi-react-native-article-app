@@ -2,14 +2,15 @@ import { useState, useEffect } from "react";
 import { Button, StyleSheet, TextInput, View, Modal } from "react-native";
 
 function ArticleInput(props) {
+  console.log(props);
   const { name, price, id } = props.selectedArticle;
-  const [enteredNameText, setEnteredNameText] = useState(name);
-  const [enteredPriceText, setEnteredPriceText] = useState(price);
+  const [enteredNameText, setEnteredNameText] = useState("");
+  const [enteredPriceText, setEnteredPriceText] = useState("");
 
   useEffect(() => {
     setEnteredNameText(name);
     setEnteredPriceText(price);
-  });
+  }, [id]);
 
   function nameInputHandler(enteredName) {
     setEnteredNameText(enteredName);
@@ -37,6 +38,10 @@ function ArticleInput(props) {
     setEnteredPriceText("");
   }
 
+  function deleteArticleHandler(id) {
+    props.onDelete(id);
+  }
+
   return (
     <Modal visible={props.visible}>
       <View style={styles.inputContainer}>
@@ -60,7 +65,7 @@ function ArticleInput(props) {
                 <Button
                   color="red"
                   title="Supprimer"
-                  onPress={cancelArticleHandler}
+                  onPress={deleteArticleHandler.bind(this, id)}
                 />
               </View>
               <View>

@@ -28,8 +28,10 @@ export default function App() {
 
   function deleteArticleHandler(id) {
     setArticles((currentArticles) =>
-      currentArticles.filter((price) => price.id !== id)
+      currentArticles.filter((article) => article.id !== id)
     );
+    setArticle({});
+    setModalVisible(false);
   }
 
   function selectArticleHandler(article) {
@@ -37,7 +39,7 @@ export default function App() {
     setModalVisible(true);
   }
 
-  function updateArticleHander(enteredName, enteredPrice, enteredId) {}
+  function updateArticleHander(id, enteredName, enteredPrice) {}
 
   return (
     <>
@@ -58,11 +60,7 @@ export default function App() {
           selectedArticle={article}
         />
         <View style={styles.articleContainer}>
-          {articles.length ? (
-            <Text style={styles.articleListeTitle}>Liste de articles</Text>
-          ) : (
-            <Text>test</Text>
-          )}
+          <Text style={styles.articleListeTitle}>Liste de articles</Text>
           <View style={styles.articleListe}>
             <FlatList
               data={articles}
