@@ -1,19 +1,13 @@
+import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import {
-  Button,
-  FlatList,
-  StyleSheet,
-  TextInput,
-  View,
-  Text,
-  Image,
-} from "react-native";
-import ArticleItem from "./components/article-item";
+import { Button, FlatList, Image, StyleSheet, Text, View } from "react-native";
 import ArticleInput from "./components/article-input";
+import ArticleItem from "./components/article-item";
 
 export default function App() {
   const [modalIsVisible, setModalVisible] = useState(false);
   const [articles, setArticles] = useState([]);
+  const [article, setArticle] = useState({});
 
   function startAddArticleHandler() {
     setModalVisible(true);
@@ -28,7 +22,6 @@ export default function App() {
       ...currentArticles,
       { name: enteredName, price: enteredPrice, id: Math.random().toString() },
     ]);
-    console.log(articles);
     endAddArticleHandler();
   }
 
@@ -38,37 +31,56 @@ export default function App() {
     );
   }
 
+  function selectArticleHandler(article) {
+    setArticle(article);
+    setModalVisible(true);
+  }
+
+  function updateArticleHander(enteredName, enteredPrice, enteredId) {}
+
   return (
-    <View style={styles.container}>
-      <Image source={""} />
-      <View style={styles.addArticleButton}>
-        <Button title="Ajouter un article" onPress={startAddArticleHandler} />
-      </View>
-      <ArticleInput
-        onAddArticle={addArticleHandler}
-        visible={modalIsVisible}
-        onCancel={endAddArticleHandler}
-      />
-      <View style={styles.articleContainer}>
-        <Text style={styles.articleListeTitle}>Liste de articles</Text>
-        <View style={styles.articleListe}>
-          <FlatList
-            data={articles}
-            renderItem={(itemData) => {
-              return (
-                <ArticleItem
-                  name={itemData.item.name}
-                  id={itemData.item.id}
-                  price={itemData.item.price}
-                  onDeleteArticle={deleteArticleHandler}
-                />
-              );
-            }}
-            keyExtractor={(item) => item.id}
-          />
+    <>
+      <StatusBar />
+      <View style={styles.container}>
+        <Image
+          style={styles.cesiLogo}
+          source={require("./assets/images/logo-cesi.jpg")}
+        />
+        <View style={styles.addArticleButton}>
+          <Button title="Ajouter un article" onPress={startAddArticleHandler} />
+        </View>
+        <ArticleInput
+          onAddArticle={addArticleHandler}
+          visible={modalIsVisible}
+          onCancel={endAddArticleHandler}
+          onDelete={deleteArticleHandler}
+          selectedArticle={article}
+        />
+        <View style={styles.articleContainer}>
+          {articles.length ? (
+            <Text style={styles.articleListeTitle}>Liste de articles</Text>
+          ) : (
+            <Text>test</Text>
+          )}
+          <View style={styles.articleListe}>
+            <FlatList
+              data={articles}
+              renderItem={(itemData) => {
+                return (
+                  <ArticleItem
+                    name={itemData.item.name}
+                    id={itemData.item.id}
+                    price={itemData.item.price}
+                    onSelectArticle={selectArticleHandler}
+                  />
+                );
+              }}
+              keyExtractor={(item) => item.id}
+            />
+          </View>
         </View>
       </View>
-    </View>
+    </>
   );
 }
 
@@ -83,6 +95,11 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 16,
     flex: 1,
+  },
+  cesiLogo: {
+    width: 300,
+    height: 100,
+    marginHorizontal: 40,
   },
   articleListe: { paddingTop: 20 },
   articleListeTitle: {

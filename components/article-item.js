@@ -5,7 +5,11 @@ function ArticleItem(props) {
     <View style={styles.articleItem}>
       <Pressable
         style={styles.pressableItem}
-        onPress={props.onDeleteArticle.bind(this, props.id)}
+        onPress={props.onSelectArticle.bind(this, {
+          id: props.id,
+          name: props.name,
+          price: props.price,
+        })}
         android_ripple={{ color: "blueviolet" }}
       >
         <Text style={styles.articleText}>

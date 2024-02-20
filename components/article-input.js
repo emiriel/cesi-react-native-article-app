@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Button, StyleSheet, TextInput, View, Modal } from "react-native";
 
 function ArticleInput(props) {
-  const [enteredNameText, setEnteredNameText] = useState("");
-  const [enteredPriceText, setEnteredPriceText] = useState("");
+  const { name, price, id } = props.selectedArticle;
+  const [enteredNameText, setEnteredNameText] = useState(name || "");
+  const [enteredPriceText, setEnteredPriceText] = useState(price || "");
 
   function nameInputHandler(enteredName) {
     setEnteredNameText(enteredName);
@@ -36,12 +37,29 @@ function ArticleInput(props) {
           keyboardType="number-pad"
         />
         <View style={styles.buttonContainer}>
-          <View style={styles.button}>
-            <Button color="red" title="Annuler" onPress={props.onCancel} />
-          </View>
-          <View>
-            <Button title="Ajouter" onPress={addArticleHandler} />
-          </View>
+          {true ? (
+            <>
+              <View style={styles.button}>
+                <Button
+                  color="red"
+                  title="Supprimer"
+                  onPress={props.onCancel}
+                />
+              </View>
+              <View>
+                <Button title="Modifier" onPress={addArticleHandler} />
+              </View>
+            </>
+          ) : (
+            <>
+              <View style={styles.button}>
+                <Button color="red" title="Annuler" onPress={props.onCancel} />
+              </View>
+              <View>
+                <Button title="Ajouter" onPress={addArticleHandler} />
+              </View>
+            </>
+          )}
         </View>
       </View>
     </Modal>
