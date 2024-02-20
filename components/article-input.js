@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Button, StyleSheet, TextInput, View, Modal } from "react-native";
 
 function ArticleInput(props) {
-  console.log(props);
   const { name, price, id } = props.selectedArticle;
   const [enteredNameText, setEnteredNameText] = useState("");
   const [enteredPriceText, setEnteredPriceText] = useState("");
@@ -27,7 +26,7 @@ function ArticleInput(props) {
   }
 
   function updateArticleHandler() {
-    props.onUpdateArticle(id, enteredNameText, enteredPriceText);
+    props.onUpdate(id, enteredNameText, enteredPriceText);
     setEnteredNameText("");
     setEnteredPriceText("");
   }
@@ -69,7 +68,7 @@ function ArticleInput(props) {
                 />
               </View>
               <View>
-                <Button title="Modifier" onPress={addArticleHandler} />
+                <Button title="Modifier" onPress={updateArticleHandler} />
               </View>
             </>
           ) : (

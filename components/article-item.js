@@ -5,7 +5,7 @@ function ArticleItem(props) {
     <View style={styles.articleItem}>
       <Pressable
         style={styles.pressableItem}
-        onPress={props.onSelectArticle.bind(this, {
+        onPress={props.onSelectArticle?.bind(this, {
           id: props.id,
           name: props.name,
           price: props.price,
