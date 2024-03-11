@@ -1,12 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, FlatList, Image, StyleSheet, Text, View } from "react-native";
+import axios from "axios";
 import ArticleInput from "./components/article-input";
 import ArticleItem from "./components/article-item";
+const API_URL = "http://10.129.129.116:3000/api/articles/all";
 
 function Article() {
   const [modalIsVisible, setModalVisible] = useState(false);
   const [articles, setArticles] = useState([]);
   const [article, setArticle] = useState({});
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
+  const fetchArticles = async () => {
+    try {
+      const response = await axios.get(API_URL);
+      setArticles(response.data.data);
+      console.log(response.data.data);
+    } catch (error) {
+      console.error("error fetching data : ", error);
+    }
+  };
 
   function startAddArticleHandler() {
     setModalVisible(true);
