@@ -3,21 +3,27 @@ import { Button, FlatList, Image, StyleSheet, Text, View } from "react-native";
 import axios from "axios";
 import ArticleInput from "./components/article-input";
 import ArticleItem from "./components/article-item";
+import { useArticlesStore } from "./store/useArticles";
 const API_URL = "http://10.129.129.116:3000/api/articles/all";
 
 function Article() {
   const [modalIsVisible, setModalVisible] = useState(false);
-  const [articles, setArticles] = useState([]);
   const [article, setArticle] = useState({});
-
+  const [allArticles, setAllArticles] = useState([]);
+  const [apiArticles, setApiArticles] = useState([]);
+  const storeArticles = useArticlesStore((state) => state.articles);
   useEffect(() => {
     fetchArticles();
   }, []);
 
+  useEffect(() => {
+    setAllArticles([...apiArticles, ...storeArticles]);
+  }, [apiArticles, storeArticles]);
+
   const fetchArticles = async () => {
     try {
       const response = await axios.get(API_URL);
-      setArticles(response.data.data);
+      setApiArticles(response.data.data);
       console.log(response.data.data);
     } catch (error) {
       console.error("error fetching data : ", error);
@@ -28,40 +34,14 @@ function Article() {
     setModalVisible(true);
   }
 
-  function endAddArticleHandler() {
+  function closeModal() {
     setModalVisible(false);
     setArticle({});
-  }
-
-  function addArticleHandler(enteredName, enteredPrice) {
-    setArticles((currentArticles) => [
-      ...currentArticles,
-      { name: enteredName, price: enteredPrice, id: Math.random().toString() },
-    ]);
-    endAddArticleHandler();
-  }
-
-  function deleteArticleHandler(id) {
-    setArticles((currentArticles) =>
-      currentArticles.filter((article) => article.id !== id)
-    );
-    setArticle({});
-    setModalVisible(false);
   }
 
   function selectArticleHandler(article) {
     setArticle(article);
     setModalVisible(true);
-  }
-
-  function updateArticleHander(id, enteredName, enteredPrice) {
-    setArticles((currentArticles) => [
-      ...currentArticles.filter((article) => article.id !== id),
-      { id, name: enteredName, price: enteredPrice },
-    ]);
-
-    setArticle({});
-    setModalVisible(false);
   }
 
   return (
@@ -74,18 +54,15 @@ function Article() {
         <Button title="Ajouter un article" onPress={startAddArticleHandler} />
       </View>
       <ArticleInput
-        onAddArticle={addArticleHandler}
         visible={modalIsVisible}
-        onCancel={endAddArticleHandler}
-        onDelete={deleteArticleHandler}
+        onModalClose={closeModal}
         selectedArticle={article}
-        onUpdate={updateArticleHander}
       />
       <View style={styles.articleContainer}>
         <Text style={styles.articleListeTitle}>Liste de articles</Text>
         <View style={styles.articleListe}>
           <FlatList
-            data={articles}
+            data={allArticles}
             renderItem={(itemData) => {
               return (
                 <ArticleItem

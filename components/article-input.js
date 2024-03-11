@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import { Button, StyleSheet, TextInput, View, Modal } from "react-native";
+import { useArticlesStore } from "../store/useArticles";
 
 function ArticleInput(props) {
   const { name, price, id } = props.selectedArticle;
   const [enteredNameText, setEnteredNameText] = useState("");
   const [enteredPriceText, setEnteredPriceText] = useState("");
+  const addArticle = useArticlesStore((state) => state.addArticle);
+  const updateArticle = useArticlesStore((state) => state.updateArticle);
+  const removeArticle = useArticlesStore((state) => state.removeArticle);
 
   useEffect(() => {
     setEnteredNameText(name);
@@ -20,25 +24,29 @@ function ArticleInput(props) {
   }
 
   function addArticleHandler() {
-    props.onAddArticle(enteredNameText, enteredPriceText);
+    addArticle({
+      name: enteredNameText,
+      price: enteredPriceText,
+      id: Math.random().toString(),
+    });
+
     setEnteredNameText("");
     setEnteredPriceText("");
+
+    props.onModalClose();
   }
 
   function updateArticleHandler() {
-    props.onUpdate(id, enteredNameText, enteredPriceText);
+    updateArticle({ id, name: enteredNameText, price: enteredPriceText });
     setEnteredNameText("");
     setEnteredPriceText("");
-  }
 
-  function cancelArticleHandler() {
-    props.onCancel();
-    setEnteredNameText("");
-    setEnteredPriceText("");
+    props.onModalClose();
   }
 
   function deleteArticleHandler(id) {
-    props.onDelete(id);
+    removeArticle(id);
+    props.onModalClose();
   }
 
   return (
@@ -77,7 +85,7 @@ function ArticleInput(props) {
                 <Button
                   color="red"
                   title="Annuler"
-                  onPress={cancelArticleHandler}
+                  onPress={props.onModalClose}
                 />
               </View>
               <View>
