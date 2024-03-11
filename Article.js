@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button, FlatList, Image, StyleSheet, Text, View } from "react-native";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import ArticleInput from "./components/article-input";
 import ArticleItem from "./components/article-item";
 import { useArticlesStore } from "./store/useArticles";
@@ -12,13 +13,25 @@ function Article() {
   const [allArticles, setAllArticles] = useState([]);
   const [apiArticles, setApiArticles] = useState([]);
   const storeArticles = useArticlesStore((state) => state.articles);
+  const setStoreArticles = useArticlesStore((state) => state.setArticles);
   useEffect(() => {
+    getItemsFromStorage();
     fetchArticles();
   }, []);
 
   useEffect(() => {
     setAllArticles([...apiArticles, ...storeArticles]);
   }, [apiArticles, storeArticles]);
+
+  const getItemsFromStorage = async () => {
+    try {
+      const jsonData = await AsyncStorage.getItem("articles-storage");
+      const data = JSON.parse(jsonData);
+      setStoreArticles(data);
+    } catch (error) {
+      console.error("error fetching data : ", error);
+    }
+  };
 
   const fetchArticles = async () => {
     try {

@@ -1,14 +1,28 @@
 import { useState, useEffect } from "react";
 import { Button, StyleSheet, TextInput, View, Modal } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useArticlesStore } from "../store/useArticles";
 
 function ArticleInput(props) {
   const { name, price, id } = props.selectedArticle;
   const [enteredNameText, setEnteredNameText] = useState("");
   const [enteredPriceText, setEnteredPriceText] = useState("");
-  const addArticle = useArticlesStore((state) => state.addArticle);
+  const addStoreArticle = useArticlesStore((state) => state.addArticle);
+  const articles = useArticlesStore((state) => state.articles);
   const updateArticle = useArticlesStore((state) => state.updateArticle);
   const removeArticle = useArticlesStore((state) => state.removeArticle);
+
+  const addArticle = async (article) => {
+    try {
+      AsyncStorage.setItem(
+        "articles-storage",
+        JSON.stringify([...articles, article])
+      );
+      addStoreArticle(article);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     setEnteredNameText(name);
